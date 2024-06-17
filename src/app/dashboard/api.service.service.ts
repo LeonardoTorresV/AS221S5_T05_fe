@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiServiceService {
-  private apiUrl = 'http://localhost:8085/oraclecloud/traducciones';
+  private apiUrl = 'http://localhost:8085/traducciones';
   private translationApiUrl = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=en&to=es';
   private translationApiKey = 'b328c314264746f885a937ada7680e72';
   private translationLocation = 'eastus';
@@ -18,11 +18,11 @@ export class ApiServiceService {
   }
 
   getTraduccionesActivas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/activos`);
+    return this.http.get<any[]>(`${this.apiUrl}/active`);
   }
 
   getTraduccionesInactivas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/inactivos`);
+    return this.http.get<any[]>(`${this.apiUrl}/inactive`);
   }
 
   traducirPalabra(palabra: string): Observable<any> {
@@ -47,14 +47,14 @@ export class ApiServiceService {
   }
 
   eliminarTraduccionLogica(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/eliminar/${id}`);
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   activarTraduccion(id: number): Observable<any> {
-    return this.http.put(`${this.apiUrl}/activar/${id}`, {});
+    return this.http.put(`${this.apiUrl}/reactivate/${id}`, {});
   }
 
   eliminarTraduccionFisica(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+    return this.http.delete(`${this.apiUrl}/physically/${id}`);
   }
 }
