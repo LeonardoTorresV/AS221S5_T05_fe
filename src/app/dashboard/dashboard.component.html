@@ -6,13 +6,15 @@
     <div class="card-body p-4">
         <!-- Title -->
         <span class="fs-6">Traducciones</span>
-        <p class="mb-2"><span class="h2 me-2">Acuerdos de equipo</span>
-        </p>
+        <p class="mb-2"><span class="h2 me-2">Acuerdos de equipo</span></p>
 
         <div class="input-group mb-4">
-            <input type="text" class="form-control" placeholder="Traducir Palabra de ingles a español"
-                aria-label="Traducir Palabra de ingles a español" aria-describedby="btn-add-task"
+            <input type="text" class="form-control" placeholder="Traducir Palabra de inglés a español"
+                aria-label="Traducir Palabra de inglés a español" aria-describedby="btn-add-task"
                 [(ngModel)]="palabra_ingresada">
+            <select class="form-select" [(ngModel)]="idiomaSeleccionado">
+                <option *ngFor="let idioma of idiomas" [value]="idioma.codigo">{{ idioma.nombre }}</option>
+            </select>
             <button class="btn btn-primary" type="button" id="btn-add-task"
                 (click)="traducirPalabra()">Traducir</button>
         </div>
@@ -23,7 +25,6 @@
         <div class="input-group mb-4">
             <p>Palabra traducida: {{ palabra_traducida }}</p>
         </div>
-
 
         <!-- Nav -->
         <ul class="nav nav-underline mb-4">
@@ -40,6 +41,7 @@
                 <a class="nav-link neutral">Más</a>
             </li>
         </ul>
+
         <!-- Mostrar traducciones según la vista activa -->
         <div *ngIf="vistaActual === 'todos'">
             <ul class="list-group mb-0" *ngIf="traducciones.length > 0; else notDataTpl">
@@ -51,12 +53,21 @@
                         traduccion.palabra_traducida }}
                     </div>
                     <div>
-                        <button class="btn btn-warning" (click)="editarTraduccion(traduccion)">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-danger" (click)="openModalEliminar(traduccion)">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
+                        <ng-container *ngIf="traduccion.estado === 'A'; else inactivoTpl">
+                            <button class="btn btn-warning" (click)="openEditModal(traduccion)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-danger"
+                                (click)="eliminarTraduccionLogica(traduccion.id_traducciones_guardadas)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </ng-container>
+                        <ng-template #inactivoTpl>
+                            <button class="btn btn-success"
+                                (click)="reactivarTraduccion(traduccion.id_traducciones_guardadas)">
+                                <i class="fas fa-undo-alt"></i>
+                            </button>
+                        </ng-template>
                     </div>
                 </li>
             </ul>
@@ -72,10 +83,9 @@
                         traduccion.palabra_traducida }}
                     </div>
                     <div>
-                        <button class="btn btn-warning" (click)="editarTraduccion(traduccion)">
+                        <button class="btn btn-warning" (click)="openEditModal(traduccion)">
                             <i class="fas fa-edit"></i>
                         </button>
-
                         <button class="btn btn-danger"
                             (click)="eliminarTraduccionLogica(traduccion.id_traducciones_guardadas)">
                             <i class="fas fa-trash-alt"></i>
@@ -129,20 +139,22 @@
                             <div class="form-group">
                                 <label for="palabraIngresada">Palabra Ingresada</label>
                                 <input type="text" class="form-control" id="palabraIngresada"
-                                    [(ngModel)]="modalTraduccion.palabra_ingresada" name="palabra_ingresada" required>
+                                    [(ngModel)]="modalTraduccion.palabra_ingresada" name="palabra_ingresada"
+                                    (input)="traducirPalabraParaEdicion(modalTraduccion.palabra_ingresada)" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="idiomaSeleccionado">Idioma</label>
+                                <select class="form-select" id="idiomaSeleccionado" [(ngModel)]="modalTraduccion.idioma"
+                                    name="idioma"
+                                    (change)="traducirPalabraParaEdicion(modalTraduccion.palabra_ingresada)">
+                                    <option *ngFor="let idioma of idiomas" [value]="idioma.codigo">{{ idioma.nombre }}
+                                    </option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="palabraTraducida">Palabra Traducida</label>
                                 <input type="text" class="form-control" id="palabraTraducida"
-                                    [(ngModel)]="modalTraduccion.palabra_traducida" name="palabra_traducida" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="estado">Estado</label>
-                                <select class="form-control" id="estado" [(ngModel)]="modalTraduccion.estado"
-                                    name="estado" required>
-                                    <option value="A">Activo</option>
-                                    <option value="I">Inactivo</option>
-                                </select>
+                                    [(ngModel)]="modalTraduccion.palabra_traducida" name="palabra_traducida" readonly>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary"
@@ -154,6 +166,8 @@
                 </div>
             </div>
         </div>
+
+
 
 
         <!-- Modal de Eliminacion -->
@@ -168,23 +182,19 @@
                                 (click)="closeModal()"></button>
                         </div>
                         <div class="modal-body text-center">
-                            <img src="https://definicion.de/wp-content/uploads/2021/09/eliminar.png" alt="Question Icon"
-                                class="img-fluid mb-3" style="max-width: 80px">
-                            <h4>¿Estás seguro de que deseas eliminar permanentemente la traducción?</h4>
-                            <!-- Muestra la información de la traducción que se va a eliminar -->
-                            <p>Palabra ingresada: {{ modalTraduccion?.palabra_ingresada }}</p>
-                            <p>Palabra traducida: {{ modalTraduccion?.palabra_traducida }}</p>
+                            <img src="https://cdn-icons-png.flaticon.com/512/463/463612.png" class="img-fluid"
+                                style="max-width: 100px;">
+                            <p class="mt-3">¿Estás seguro de que deseas eliminar esta traducción? Esta acción no se
+                                puede deshacer.</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
-                            <!-- Llama a eliminarTraduccionFisica solo cuando se confirme la eliminación -->
                             <button type="button" class="btn btn-danger"
-                                (click)="eliminarTraduccionFisica(modalTraduccion?.id_traducciones_guardadas)">Eliminar</button>
+                                (click)="eliminarTraduccionFisica(modalTraduccion.id_traducciones_guardadas)">Eliminar</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>

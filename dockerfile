@@ -1,19 +1,15 @@
-FROM node:20-alpine as build-step
+FROM node:18
 
 RUN mkdir -p /app
 
 WORKDIR /app
 
-COPY package.json /app
+COPY package*.json /app/
 
 RUN npm install
 
 COPY . /app
 
-RUN npm run build --prod
+EXPOSE 8080
 
-#Segunda etapa
-
-FROM nginx:1.17.1-alpine
-
-COPY --from=build-step /app/dist/traductor-ia-fe /usr/share/nginx/html
+CMD ["npm", "start"]
