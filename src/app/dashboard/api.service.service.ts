@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiServiceService {
-  private apiUrl = 'https://miniature-engine-p46r9qq9xppcrgq5-8080.app.github.dev/traducciones';
+  private apiUrl = 'https://improved-palm-tree-rqxg6g4xgvvfw7p-8080.app.github.dev/traducciones';
   private translationApiUrl = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0';
   private translationApiKey = 'b328c314264746f885a937ada7680e72';
   private translationLocation = 'eastus';
