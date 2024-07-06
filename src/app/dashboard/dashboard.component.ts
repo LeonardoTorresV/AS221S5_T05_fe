@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { ApiServiceService } from './api.service.service';
 import Swal from 'sweetalert2';
 
@@ -8,6 +8,13 @@ import Swal from 'sweetalert2';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+
+  @Output() goBack = new EventEmitter<void>();
+
+  navigateBack() {
+    this.goBack.emit();
+  }
+
   traducciones: any[] = [];
   horaActual: string = '';
   fechaActual: string = '';

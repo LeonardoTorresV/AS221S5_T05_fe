@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'TraductorIA-fe';
+  showDashboard = false;
+
+  toggleView() {
+    this.showDashboard = !this.showDashboard;
+    console.log('showDashboard:', this.showDashboard); // Para depuración
+  }
 }

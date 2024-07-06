@@ -1,10 +1,8 @@
-
 <div class="container py-5 h-100">
   <div class="row d-flex justify-content-center py-5">
-    <div class="col col-lg-8 col-xl-7">
-      <!-- Task card app init -->
-      <app-dashboard></app-dashboard>
-      <!-- Task card app end -->
+    <div class="row d-flex justify-content-center py-5">
+      <app-introduction *ngIf="!showDashboard" (goToDashboard)="toggleView()"></app-introduction>
+      <app-dashboard *ngIf="showDashboard" (goBack)="toggleView()"></app-dashboard>
     </div>
   </div>
 </div>

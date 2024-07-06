@@ -1,0 +1,23 @@
+#currentDateTime {
+    position: relative;
+    padding-right: 200px; /* Espacio para el botón */
+}
+
+.buttonExit {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    color: #dc3545;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.buttonExit:hover {
+    background-color: #e2e6ea;
+    color: #bd2130;
+}
